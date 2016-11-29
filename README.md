@@ -1,6 +1,6 @@
 # Overview
 
-Generate random numbers using dice notation.
+Generate random integers and compute odds using dice notation.
 
 # How to Run
 
@@ -10,6 +10,24 @@ Generate random numbers using dice notation.
 
     $ ./bin/roll.sh 3d6
     12
+
+    $ ./bin/odds.sh 3d6
+    3: (0.463%)
+    4: (1.389%)
+    5: (2.778%)
+    6: (4.630%)
+    7: (6.944%)
+    8: (9.722%)
+    9: (11.574%)
+    10: (12.500%)
+    11: (12.500%)
+    12: (11.574%)
+    13: (9.722%)
+    14: (6.944%)
+    15: (4.630%)
+    16: (2.778%)
+    17: (1.389%)
+    18: (0.463%)
 
 # Dice Notation
 
@@ -50,31 +68,12 @@ It is possible to be explicit about whether high or low dice are kept or dropped
 
 # Odds
 
-Compute the odds for dice notation:
+The code for computing odds is in `dice/odds.py`.
 
-    $ ./bin/odds.sh 4d6kh3
-    3: (0.077%)
-    4: (0.309%)
-    5: (0.772%)
-    6: (1.620%)
-    7: (2.932%)
-    8: (4.784%)
-    9: (7.022%)
-    10: (9.414%)
-    11: (11.420%)
-    12: (12.886%)
-    13: (13.272%)
-    14: (12.346%)
-    15: (10.108%)
-    16: (7.253%)
-    17: (4.167%)
-    18: (1.620%)
-
-The code is in `dice/odds.py`. Probabilities can be exact using the
-`fractions.Fraction` from the Python standard library or approximate
-using the `float` type.  This is controlled by setting the
-`Probability` type and the `probability` constructor in
-`dice/odds.py`.
+Probabilities can be exact using the `fractions.Fraction` from the
+Python standard library or approximate using the `float` type.  This
+is controlled by setting the `Probability` type and the `probability`
+constructor in `dice/odds.py`.
 
 An integer-valued random variable type is needed for storing dice
 notation odds. The following typedefs are used:
@@ -115,6 +114,4 @@ These functions return `MRV` values:
     sorted_mrv():             sorts each List[int] in an MRV. This may introduce
                               duplicates.
 
-    cartesian_product_mrv():  takes an MRV and an RV and returns a new MRV
-                              by performing a Cartesian produt.
-    
+    cartesian_product_mrv():  returns Cartesian product of an MRV and an RV.    
