@@ -35,11 +35,11 @@ def eval_literal(ast: tuple) -> int:
         raise Exception('unsupported operation: {}'.format(ast[0]))
 
 
-def dedupe_rv(_odds: IterRV) -> RV:
-    odds = list(_odds)
+def dedupe_rv(rv: IterRV) -> RV:
+    _rv = list(rv)
     return [(i, sum(pair[1] for pair in pairs))
             for i, pairs
-            in itertools.groupby(sorted(odds, key=operator.itemgetter(0)),
+            in itertools.groupby(sorted(_rv, key=operator.itemgetter(0)),
                                  key=operator.itemgetter(0))]
 
 
@@ -56,23 +56,23 @@ def empty_to_none(iterable: IterRV) -> Optional[IterRV]:
     return itertools.chain([first], iterable)
 
 
-def sum_rv(_odds1: IterRV, _odds2: IterRV) -> RV:
-    odds1 = empty_to_none(_odds1)
-    odds2 = empty_to_none(_odds2)
-    if odds1 is None:
-        if odds2 is None:
+def sum_rv(rv1: IterRV, rv2: IterRV) -> RV:
+    _rv1 = empty_to_none(rv1)
+    _rv2 = empty_to_none(rv2)
+    if _rv1 is None:
+        if _rv2 is None:
             raise Exception('cannot sum two empty lists')
         else:
-            return dedupe_rv(odds2)
+            return dedupe_rv(_rv2)
     else:
-        if odds2 is None:
-            return dedupe_rv(odds1)
+        if _rv2 is None:
+            return dedupe_rv(_rv1)
         else:
             return dedupe_rv((i1 + i2, p1 * p2)
                              for (i1, p1)
-                             in odds1
+                             in _rv1
                              for (i2, p2)
-                             in odds2)
+                             in _rv2)
 
 
 def _die_rv(num_dice: int, num_faces: int, accum: RV) -> RV:
@@ -92,29 +92,29 @@ def die_rv(num_dice: int, num_faces: int) -> RV:
     return _die_rv(num_dice, num_faces, [])
 
 
-def dedupe_mrv(_list_odds: IterMRV) -> MRV:
-    list_odds = list(_list_odds)
+def dedupe_mrv(mrv: IterMRV) -> MRV:
+    _mrv = list(mrv)
     return [(a, sum(pair[1] for pair in pairs))
             for a, pairs
-            in itertools.groupby(sorted(list_odds, key=operator.itemgetter(0)),
+            in itertools.groupby(sorted(_mrv, key=operator.itemgetter(0)),
                                  key=operator.itemgetter(0))]
 
 
-def tail_mrv(list_odds: MRV, list_len: int) -> MRV:
-    return [(a[-list_len:], p) for a, p in list_odds]
+def tail_mrv(mrv: MRV, list_len: int) -> MRV:
+    return [(a[-list_len:], p) for a, p in mrv]
 
 
-def sorted_mrv(list_odds: MRV) -> MRV:
-    return [(sorted(a), p) for a, p in list_odds]
+def sorted_mrv(mrv: MRV) -> MRV:
+    return [(sorted(a), p) for a, p in mrv]
 
 
-def sum_mrv_rv(odds: IterMRV) -> RV:
-    return dedupe_rv((sum(rolls), prob) for rolls, prob in odds)
+def sum_mrv_rv(mrv: IterMRV) -> RV:
+    return dedupe_rv((sum(rolls), prob) for rolls, prob in mrv)
 
 
-def cartesian_product_mrv(list_odds: IterMRV, _odds: IterRV) -> MRV:
-    odds = list(_odds)
-    retval = [(a + [o], p1 * p2) for a, p1 in list_odds for o, p2 in odds]
+def cartesian_product_mrv(mrv: IterMRV, rv: IterRV) -> MRV:
+    _rv = list(rv)
+    retval = [(a + [o], p1 * p2) for a, p1 in mrv for o, p2 in _rv]
 
     return retval
 
@@ -123,8 +123,8 @@ def keep_high_rv(num_dice: int,
                  num_faces: int,
                  num_keep: int) -> RV:
 
-    def _keep_high_rv(list_odds: IterMRV, num_keep: int) -> IterMRV:
-        return ((list(reversed(sorted(a)))[:num_keep], p) for a, p in list_odds)
+    def _keep_high_rv(mrv: IterMRV, num_keep: int) -> IterMRV:
+        return ((list(reversed(sorted(a)))[:num_keep], p) for a, p in mrv)
 
     def _list_odds(num_dice: int, num_faces: int, accum: MRV) -> MRV:
         assert(0 <= num_dice < const.MAX_NUM_DICE_ODDS)

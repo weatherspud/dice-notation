@@ -73,7 +73,6 @@ class TestIntegerRandomVariable(unittest.TestCase):
                  ([1, 2, 2], 0.1)]
         shortened_odds = odds.tail_mrv(_odds, 2)
         self.assertEqual(4, len(shortened_odds))
-        print(shortened_odds)
         deduped_odds = odds.dedupe_mrv(shortened_odds)
         self.assertEqual(3, len(deduped_odds))
         for a, p in deduped_odds:
