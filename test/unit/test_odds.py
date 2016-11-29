@@ -84,13 +84,44 @@ class TestIntegerRandomVariable(unittest.TestCase):
                 self.assertAlmostEqual(p, 0.3)
 
     def test_sum_mrv_rv(self) -> None:
-        pass
+        mrv = [([1, 1, 1], 0.5),
+               ([1, 1, 2], 0.2),
+               ([1, 2, 1], 0.2),
+               ([1, 2, 2], 0.1)]
+        rv = odds.sum_mrv_rv(mrv)
+        self.assertEqual(3, len(rv))
+        for i, p in rv:
+            if i == 3:
+                self.assertAlmostEqual(p, 0.5)
+            if i == 4:
+                self.assertAlmostEqual(p, 0.4)
+            if i == 5:
+                self.assertAlmostEqual(p, 0.1)
 
     def test_cartesian_product_mrv(self) -> None:
-        pass
+        mrv = [([1], 0.5),
+               ([2], 0.3),
+               ([3], 0.2)]
+        rv = [(4, 0.6),
+              (5, 0.4)]
+        prod = odds.cartesian_product_mrv(mrv, rv)
+        self.assertEqual(6, len(prod))
+        for a, p in prod:
+            if a == [1, 4]:
+                self.assertAlmostEqual(p, 0.3)
+            if a == [2, 5]:
+                self.assertAlmostEqual(p, 0.12)
 
     def test_dice_notation_egf(self) -> None:
-        pass
+        egf = odds.dice_notation_egf('3d6')
+        self.assertEqual(16, len(egf))
+        for i, p in egf:
+            if i == 3:
+                self.assertAlmostEqual(p, 1.0)
+            if i == 4:
+                self.assertAlmostEqual(p, 215 / 216)
+            if i == 18:
+                self.assertAlmostEqual(p, 1 / 216)
 
 if __name__ == '__main__':
     unittest.main()
