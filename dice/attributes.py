@@ -4,13 +4,13 @@ import operator
 from typing import List
 
 import dice.classes
-import dice.integer_random_variable as irv
+import dice.odds as odds
 
 PROB_FMT = '%.3f'
 
 
 def standard(min_attributes: List[int], roll_expr: str='3d6') -> Fraction:
-    score_to_prob_list = irv.dice_notation_egf(roll_expr)
+    score_to_prob_list = odds.dice_notation_egf(roll_expr)
     score_to_prob = {}
     for i, p in score_to_prob_list:
         score_to_prob[i] = p
@@ -30,11 +30,11 @@ def list_greater_or_equal(a1: List[int], a2: List[int]) -> bool:
 
 
 def sorted_attributes(roll_expr: str='3d6') -> None:
-    accum = [([o], p) for o, p in irv.dice_notation_rv(roll_expr)]
+    accum = [([o], p) for o, p in odds.dice_notation_rv(roll_expr)]
     for _ in range(1, 6):
-        accum = irv.dedupe_mrv(irv.sorted_mrv(
-            irv.cartesian_product_mrv(accum,
-                                      irv.dice_notation_rv(roll_expr))))
+        accum = odds.dedupe_mrv(odds.sorted_mrv(
+            odds.cartesian_product_mrv(accum,
+                                       odds.dice_notation_rv(roll_expr))))
     for _class, min_attributes in sorted(dice.classes.MIN_ATTRIBUTES.items(),
                                          key=operator.itemgetter(0)):
         sorted_min_attributes = sorted(min_attributes)
@@ -47,12 +47,12 @@ def sorted_attributes(roll_expr: str='3d6') -> None:
 
 def best_of(roll_expr: str='3d6', best_of: int=12) -> None:
     assert(best_of >= 6)
-    accum = [([o], p) for o, p in irv.dice_notation_rv(roll_expr)]
+    accum = [([o], p) for o, p in odds.dice_notation_rv(roll_expr)]
     for _ in range(1, best_of):
-        prod = irv.cartesian_product_mrv(accum, irv.dice_notation_rv(roll_expr))
-        sort = irv.sorted_mrv(prod)
-        short = irv.tail_mrv(sort, 6)
-        dedupe = irv.dedupe_mrv(short)
+        prod = odds.cartesian_product_mrv(accum, odds.dice_notation_rv(roll_expr))
+        sort = odds.sorted_mrv(prod)
+        short = odds.tail_mrv(sort, 6)
+        dedupe = odds.dedupe_mrv(short)
         accum = dedupe
     for _class, min_attributes in sorted(dice.classes.MIN_ATTRIBUTES.items(),
                                          key=operator.itemgetter(0)):
@@ -65,7 +65,7 @@ def best_of(roll_expr: str='3d6', best_of: int=12) -> None:
 
 
 def best_of_attribute(roll_expr: str='3d6', best_of: int=6) -> None:
-    initial_odds = irv.dice_notation_egf(roll_expr)
+    initial_odds = odds.dice_notation_egf(roll_expr)
     best_of_odds = {}
     for i, p in initial_odds:
         best_of_odds[i] = 1 - (1 - p) ** best_of
