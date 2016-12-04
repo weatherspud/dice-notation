@@ -70,10 +70,10 @@ It is possible to be explicit about whether high or low dice are kept or dropped
 
 The code for computing odds is in `dice/odds.py`.
 
-Probabilities can be exact using `fractions.Fraction` from the
-Python standard library or approximate using the `float` type.  This
-is controlled by setting the `Probability` type and the `probability`
-constructor in `dice/odds.py`.
+Probabilities can be exact using the `fractions.Fraction` type from
+the Python standard library or approximate using the `float` type.
+This is controlled by setting the `Probability` type and the
+`probability` constructor in `dice/odds.py`.
 
 An integer-valued random variable type is needed for storing dice
 notation odds. The following typedefs are used:
