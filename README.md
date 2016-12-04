@@ -42,7 +42,7 @@ Generate a random integer in the range 2–7:
 Generate a random integer in the range 1–100:
 
     d100
-    
+
 Generate a random integer in the range 0–99:
 
     d100-1
@@ -54,7 +54,7 @@ Generate three random integers in the range 1–6 and add them:
 Roll 4 sixers and keep the highest 3:
 
     4d6k3
-    
+
 Equivalently, roll 4 sixers and drop the lowest:
 
     4d6d1
@@ -70,7 +70,7 @@ It is possible to be explicit about whether high or low dice are kept or dropped
 
 The code for computing odds is in `dice/odds.py`.
 
-Probabilities can be exact using the `fractions.Fraction` from the
+Probabilities can be exact using `fractions.Fraction` from the
 Python standard library or approximate using the `float` type.  This
 is controlled by setting the `Probability` type and the `probability`
 constructor in `dice/odds.py`.
@@ -94,7 +94,7 @@ These functions return `RV` values:
     die_rv():           returns RV for rolling N dice with M faces.
 
     keep_high_rv():     returns RV for rolling N dice with M faces, keeping highest K.
-    
+
     sum_mrv_rv():
 
 A multivariate random variable type is needed for storing multiple
@@ -114,4 +114,4 @@ These functions return `MRV` values:
     sorted_mrv():             sorts each List[int] in an MRV. This may introduce
                               duplicates.
 
-    cartesian_product_mrv():  returns Cartesian product of an MRV and an RV.    
+    cartesian_product_mrv():  returns Cartesian product of an MRV and an RV.
