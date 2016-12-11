@@ -83,19 +83,21 @@ notation odds. The following typedefs are used:
 
 These functions return `RV` values:
 
-    dice_notation_rv(): returns RV for dice notation.
+    dice_notation_rv():     returns RV for dice notation.
 
-    dedupe_rv():        makes sure each integer appears at most once in the list.
-                        If an integer appears multiple times, the probabilities are
-                        summed in the return value.
+    dedupe_rv():            makes sure each integer appears at most once in the list.
+                            If an integer appears multiple times, the probabilities are
+                            summed in the return value.
 
-    sum_rv():           returns RV obtained by summing two RVs
+    sum_rv():               returns RV obtained by summing two RVs.
 
-    die_rv():           returns RV for rolling N dice with M faces.
+    multiply_scalar_rv():   returns RV obtained by applying scalar multiplication to RV.
 
-    keep_high_rv():     returns RV for rolling N dice with M faces, keeping highest K.
+    die_rv():               returns RV for rolling N dice with M faces.
 
-    sum_mrv_rv():
+    keep_high_rv():         returns RV for rolling N dice with M faces, keeping highest K.
+
+    sum_mrv_rv():           returns RV obtained by summming RVs in a MRV.
 
 A multivariate random variable type is needed for storing multiple
 dice rolls, such as are used to generate attributes. The following

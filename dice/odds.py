@@ -75,6 +75,10 @@ def sum_rv(rv1: IterRV, rv2: IterRV) -> RV:
                              in _rv2)
 
 
+def multiply_scalar_rv(rv: IterRV, scalar: int) -> RV:
+    return [(i * scalar, p) for i, p in rv]
+
+
 def _die_rv(num_dice: int, num_faces: int, accum: RV) -> RV:
     assert(0 <= num_dice < const.MAX_NUM_DICE_ODDS)
     if num_dice == 0:
@@ -166,6 +170,15 @@ def dice_notation_rv(expr: str) -> RV:
             return keep_high_rv(eval_literal(ast[1]),
                                 eval_literal(ast[2]),
                                 eval_literal(ast[3]))
+        elif ast[0] == const.OP_ADD:
+            return sum_rv(eval_ast_rv(ast[1]), eval_ast_rv(ast[2]))
+        elif ast[0] == const.OP_MULTIPLY:
+            if ast[1][0] == const.OP_LITERAL:
+                return multiply_scalar_rv(eval_ast_rv(ast[2]), ast[1][1])
+            elif ast[2][0] == const.OP_LITERAL:
+                return multiply_scalar_rv(eval_ast_rv(ast[1]), ast[2][1])
+            else:
+                raise Exception('one argument of multiplication must be literal')
         else:
             raise Exception('unsupported operation: {}'.format(ast[0]))
 
@@ -191,3 +204,4 @@ if __name__ == '__main__':
                 print("{}: {}/{}".format(i, p.numerator, p.denominator))  # type: ignore
             else:
                 print("{}: ({}%)".format(i, '%.3f' % (100.0 * p)))
+                # print("{}\t{}".format(i, p))

@@ -33,6 +33,16 @@ class TestIntegerRandomVariable(unittest.TestCase):
             if i == 3:
                 self.assertAlmostEqual(p, 2 / 36)
 
+    def test_multiply_scalar_rv(self) -> None:
+        d6_odds = odds.dice_notation_rv('d6')
+        multiply_scalar_odds = odds.multiply_scalar_rv(d6_odds, 4)
+        self.assertEqual(6, len(multiply_scalar_odds))
+        for i, p in multiply_scalar_odds:
+            if i == 4:
+                self.assertAlmostEqual(p, 1 / 6)
+            if i == 8:
+                self.assertAlmostEqual(p, 1 / 6)
+
     def test_die_rv(self) -> None:
         _odds = odds.die_rv(num_dice=3, num_faces=6)
         self.assertEqual(16, len(_odds))
