@@ -5,7 +5,7 @@ check: pylint mypy pep8 test
 
 .PHONY: test
 test: ve
-	. ve/bin/activate && find test/unit -name test*.py | PYTHONPATH=. xargs -n 1 python
+	. ve/bin/activate && PYTHONPATH=. pytest --ignore ve
 
 ve:
 	virtualenv $@ --python=python$(python_version)
