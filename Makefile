@@ -1,4 +1,4 @@
-python_version := 3.5
+python_version := 3.6
 
 .PHONY: check
 check: pylint mypy pep8 test

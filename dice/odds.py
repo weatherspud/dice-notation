@@ -11,6 +11,7 @@ import dice.parse as parse
 ProbabilityFraction = Fraction
 ProbabilityFloat = float
 Probability = ProbabilityFloat
+# pylint: disable=invalid-sequence-index
 RV = List[Tuple[int, Probability]]
 IterRV = Iterable[Tuple[int, Probability]]
 MRV = List[Tuple[List[int], Probability]]
@@ -159,6 +160,42 @@ def keep_high_rv(num_dice: int,
     return sum_mrv_rv(_keep_high_rv(_list_odds(num_dice, num_faces, []), num_keep))
 
 
+def keep_low_rv(num_dice: int,
+                num_faces: int,
+                num_keep: int) -> RV:
+
+    def _keep_low_rv(mrv: IterMRV, num_keep: int) -> IterMRV:
+        return ((list(sorted(a))[:num_keep], p) for a, p in mrv)
+
+    def _list_odds(num_dice: int, num_faces: int, accum: MRV) -> MRV:
+        assert(0 <= num_dice < const.MAX_NUM_DICE_ODDS)
+        if num_dice == 0:
+            return accum
+        elif len(accum) == 0:
+            if num_dice == 1:
+                return [([i], probability(1, num_faces))
+                        for i
+                        in range(1, num_faces + 1)]
+            else:
+                return _list_odds(num_dice - 2,
+                                  num_faces,
+                                  cartesian_product_mrv([([i], probability(1, num_faces))
+                                                         for i
+                                                         in range(1, num_faces + 1)],
+                                                        [(i, probability(1, num_faces))
+                                                         for i
+                                                         in range(1, num_faces + 1)]))
+        else:
+            return _list_odds(num_dice - 1,
+                              num_faces,
+                              cartesian_product_mrv(accum,
+                                                    [(i, probability(1, num_faces))
+                                                     for i
+                                                     in range(1, num_faces + 1)]))
+
+    return sum_mrv_rv(_keep_low_rv(_list_odds(num_dice, num_faces, []), num_keep))
+
+
 def dice_notation_rv(expr: str) -> RV:
 
     def eval_ast_rv(ast: tuple) -> RV:
@@ -170,6 +207,10 @@ def dice_notation_rv(expr: str) -> RV:
             return keep_high_rv(eval_literal(ast[1]),
                                 eval_literal(ast[2]),
                                 eval_literal(ast[3]))
+        elif ast[0] == const.OP_KEEP_LOW:
+            return keep_low_rv(eval_literal(ast[1]),
+                               eval_literal(ast[2]),
+                               eval_literal(ast[3]))
         elif ast[0] == const.OP_ADD:
             return sum_rv(eval_ast_rv(ast[1]), eval_ast_rv(ast[2]))
         elif ast[0] == const.OP_MULTIPLY:
@@ -198,10 +239,12 @@ if __name__ == '__main__':
     if len(sys.argv) != 2:
         raise Exception('USAGE: odd.py EXPRESSION')
     else:
+        cumsum = 0.0
         for i, p in dice_notation_rv(sys.argv[1]):
             if Probability == ProbabilityFraction:
                 # pylint: disable=no-member
                 print("{}: {}/{}".format(i, p.numerator, p.denominator))  # type: ignore
             else:
-                print("{}: ({}%)".format(i, '%.3f' % (100.0 * p)))
-                # print("{}\t{}".format(i, p))
+                # print("{}: ({}%)".format(i, '%.3f' % (100.0 * p)))
+                cumsum += p
+                print("{}\t{}\t{}".format(i, '%.4f' % (100.0 * p), '%.4f' % (100.0 * cumsum)))
